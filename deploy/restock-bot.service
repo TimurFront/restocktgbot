@@ -24,6 +24,8 @@ Type=simple
 User=ubuntu
 WorkingDirectory=/home/ubuntu/restocktgbot
 EnvironmentFile=/home/ubuntu/restocktgbot/.env
+# Часовой пояс для «Получено: …» в заявках и карточках (сервер живёт по UTC)
+Environment=TZ=Asia/Almaty
 ExecStart=/usr/bin/node dist/index.js
 Restart=always
 RestartSec=5
