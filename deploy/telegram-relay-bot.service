@@ -7,7 +7,7 @@
 #   sudo systemctl enable --now telegram-relay-bot
 #
 # ВАЖНО: пути ниже (WorkingDirectory, EnvironmentFile) предполагают, что
-# репозиторий склонирован как ~/finfix-bot — так называется он сам на GitHub,
+# репозиторий склонирован как ~/restocktgbot — так называется он сам на GitHub,
 # и именно так его называет `git clone` без явного имени папки. Если вы
 # клонировали под другим именем — поправьте оба пути ниже (или командой
 # sed после копирования файла, см. DEPLOY.md шаг C5).
@@ -22,8 +22,8 @@ Wants=network-online.target
 [Service]
 Type=simple
 User=ubuntu
-WorkingDirectory=/home/ubuntu/finfix-bot
-EnvironmentFile=/home/ubuntu/finfix-bot/.env
+WorkingDirectory=/home/ubuntu/restocktgbot
+EnvironmentFile=/home/ubuntu/restocktgbot/.env
 ExecStart=/usr/bin/node dist/index.js
 Restart=always
 RestartSec=5

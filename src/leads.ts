@@ -4,7 +4,8 @@ import { getState, setState } from './store';
 import { TelegramError, tg } from './telegram';
 
 /* --------------------------------- модель -----------------------------------
- * Форма зеркалит DemoRequest + LeadKind из FINFIXlanding (lib/validation.ts):
+ * Форма зеркалит DemoRequest + LeadKind из FINFIXlanding (lib/validation.ts);
+ * форма сайта Restock (name, company, phone, comment) укладывается в kind=full:
  *   full  — имя, компания, телефон обязательны; comment/plan/module опциональны
  *   quick — только телефон (карточка «Консультация»)
  * Сайт уже валидирует и очищает поля на своей стороне (lib/sanitize.ts) —

@@ -77,14 +77,14 @@ node -v
 Код уже подготовлен и закоммичен локально. Осталось создать пустой репозиторий и запушить.
 
 1. Откройте https://github.com/new
-2. **Repository name**: **важно** — то имя, что вы здесь укажете, станет именем папки на сервере после `git clone` (шаг C2), и от него зависят пути в systemd-юните (шаг C5). Проще всего использовать то же имя, что уже в этом шаблоне — `finfix-bot` — тогда ничего в DEPLOY.md и `deploy/telegram-relay-bot.service` подставлять не придётся. Если назовёте иначе — на шаге C5 нужно будет поправить пути в юните под ваше имя (команда там же). Public или Private — на ваш выбор, секретов в коде нет (токен хранится только в `.env`, он в `.gitignore` и никогда не коммитится); но учтите: **приватный репозиторий `git clone` на сервере без токена не отдаст** — либо делайте публичным, либо настраивайте деплой-токен отдельно.
+2. **Repository name**: **важно** — то имя, что вы здесь укажете, станет именем папки на сервере после `git clone` (шаг C2), и от него зависят пути в systemd-юните (шаг C5). Проще всего использовать то же имя, что уже в этом шаблоне — `restocktgbot` — тогда ничего в DEPLOY.md и `deploy/telegram-relay-bot.service` подставлять не придётся. Если назовёте иначе — на шаге C5 нужно будет поправить пути в юните под ваше имя (команда там же). Public или Private — на ваш выбор, секретов в коде нет (токен хранится только в `.env`, он в `.gitignore` и никогда не коммитится); но учтите: **приватный репозиторий `git clone` на сервере без токена не отдаст** — либо делайте публичным, либо настраивайте деплой-токен отдельно.
 3. **НЕ** ставьте галки «Add README» / «.gitignore» / «license» — они уже есть локально, лишний файл вызовет конфликт при первом пуше.
 4. **Create repository**.
 
 GitHub покажет команды для «existing repository» — выполните их в PowerShell **в папке проекта**:
 
 ```powershell
-git remote add origin https://github.com/ВАШ_ЛОГИН/finfix-bot.git
+git remote add origin https://github.com/ВАШ_ЛОГИН/restocktgbot.git
 git branch -M main
 git push -u origin main
 ```
@@ -96,13 +96,13 @@ git push -u origin main
 Снова в SSH-сессии на сервере:
 
 ```bash
-git clone https://github.com/ВАШ_ЛОГИН/finfix-bot.git
-cd finfix-bot
+git clone https://github.com/ВАШ_ЛОГИН/restocktgbot.git
+cd restocktgbot
 npm ci
 npm run build
 ```
 
-`git clone` без явного имени папки называет её по имени репозитория — если на шаге C1 вы указали не `finfix-bot`, а что-то своё, здесь и везде дальше подставляйте это имя вместо `finfix-bot`.
+`git clone` без явного имени папки называет её по имени репозитория — если на шаге C1 вы указали не `restocktgbot`, а что-то своё, здесь и везде дальше подставляйте это имя вместо `restocktgbot`.
 
 ### C3. Настройка .env
 
@@ -195,10 +195,10 @@ npm start
 sudo cp deploy/telegram-relay-bot.service /etc/systemd/system/
 ```
 
-Если на шаге C1 вы клонировали репозиторий **под другим именем**, а не `finfix-bot` — обязательно поправьте пути в скопированном юните (иначе служба упадёт с `Failed to load environment files: No such file or directory`):
+Если на шаге C1 вы клонировали репозиторий **под другим именем**, а не `restocktgbot` — обязательно поправьте пути в скопированном юните (иначе служба упадёт с `Failed to load environment files: No such file or directory`):
 
 ```bash
-sudo sed -i 's|/home/ubuntu/finfix-bot|/home/ubuntu/ВАШЕ_ИМЯ_ПАПКИ|g' /etc/systemd/system/telegram-relay-bot.service
+sudo sed -i 's|/home/ubuntu/restocktgbot|/home/ubuntu/ВАШЕ_ИМЯ_ПАПКИ|g' /etc/systemd/system/telegram-relay-bot.service
 ```
 
 Дальше в любом случае:
@@ -224,7 +224,7 @@ journalctl -u telegram-relay-bot -f
 Если я пришлю изменения в код — на сервере:
 
 ```bash
-cd ~/finfix-bot
+cd ~/restocktgbot
 git pull
 npm ci
 npm run build
