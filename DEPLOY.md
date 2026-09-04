@@ -77,7 +77,7 @@ node -v
 Код уже подготовлен и закоммичен локально. Осталось создать пустой репозиторий и запушить.
 
 1. Откройте https://github.com/new
-2. **Repository name**: **важно** — то имя, что вы здесь укажете, станет именем папки на сервере после `git clone` (шаг C2), и от него зависят пути в systemd-юните (шаг C5). Проще всего использовать то же имя, что уже в этом шаблоне — `restocktgbot` — тогда ничего в DEPLOY.md и `deploy/telegram-relay-bot.service` подставлять не придётся. Если назовёте иначе — на шаге C5 нужно будет поправить пути в юните под ваше имя (команда там же). Public или Private — на ваш выбор, секретов в коде нет (токен хранится только в `.env`, он в `.gitignore` и никогда не коммитится); но учтите: **приватный репозиторий `git clone` на сервере без токена не отдаст** — либо делайте публичным, либо настраивайте деплой-токен отдельно.
+2. **Repository name**: **важно** — то имя, что вы здесь укажете, станет именем папки на сервере после `git clone` (шаг C2), и от него зависят пути в systemd-юните (шаг C5). Проще всего использовать то же имя, что уже в этом шаблоне — `restocktgbot` — тогда ничего в DEPLOY.md и `deploy/restock-bot.service` подставлять не придётся. Если назовёте иначе — на шаге C5 нужно будет поправить пути в юните под ваше имя (команда там же). Public или Private — на ваш выбор, секретов в коде нет (токен хранится только в `.env`, он в `.gitignore` и никогда не коммитится); но учтите: **приватный репозиторий `git clone` на сервере без токена не отдаст** — либо делайте публичным, либо настраивайте деплой-токен отдельно.
 3. **НЕ** ставьте галки «Add README» / «.gitignore» / «license» — они уже есть локально, лишний файл вызовет конфликт при первом пуше.
 4. **Create repository**.
 
@@ -192,28 +192,28 @@ npm start
 ### C5. Запуск как постоянной службы (автозапуск + автоперезапуск)
 
 ```bash
-sudo cp deploy/telegram-relay-bot.service /etc/systemd/system/
+sudo cp deploy/restock-bot.service /etc/systemd/system/
 ```
 
 Если на шаге C1 вы клонировали репозиторий **под другим именем**, а не `restocktgbot` — обязательно поправьте пути в скопированном юните (иначе служба упадёт с `Failed to load environment files: No such file or directory`):
 
 ```bash
-sudo sed -i 's|/home/ubuntu/restocktgbot|/home/ubuntu/ВАШЕ_ИМЯ_ПАПКИ|g' /etc/systemd/system/telegram-relay-bot.service
+sudo sed -i 's|/home/ubuntu/restocktgbot|/home/ubuntu/ВАШЕ_ИМЯ_ПАПКИ|g' /etc/systemd/system/restock-bot.service
 ```
 
 Дальше в любом случае:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable --now telegram-relay-bot
-sudo systemctl status telegram-relay-bot
+sudo systemctl enable --now restock-bot
+sudo systemctl status restock-bot
 ```
 
 Статус должен быть `active (running)`. Готово — бот работает 24/7, переживёт перезагрузку сервера и сам поднимется после сбоя.
 
 Смотреть логи в реальном времени:
 ```bash
-journalctl -u telegram-relay-bot -f
+journalctl -u restock-bot -f
 ```
 (выход — `Ctrl+C`, сама служба продолжит работать).
 
@@ -228,7 +228,7 @@ cd ~/restocktgbot
 git pull
 npm ci
 npm run build
-sudo systemctl restart telegram-relay-bot
+sudo systemctl restart restock-bot
 ```
 
 ---
@@ -237,7 +237,7 @@ sudo systemctl restart telegram-relay-bot
 
 | Проблема | Что проверить |
 |---|---|
-| `systemctl status` показывает `failed` | `journalctl -u telegram-relay-bot -n 50` — там будет причина |
+| `systemctl status` показывает `failed` | `journalctl -u restock-bot -n 50` — там будет причина |
 | Бот не отвечает в группе | Group Privacy у бота (см. README.md) — самая частая причина |
 | `ssh` не подключается | Публичный IP не сменился? (после Stop/Start инстанса он может смениться, если не зарезервирован) |
 | Не хватает памяти на E2.1.Micro | `free -h` — если совсем впритык, добавьте своп: `sudo fallocate -l 1G /swapfile && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile` |

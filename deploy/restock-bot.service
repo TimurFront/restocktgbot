@@ -2,9 +2,9 @@
 # сервера и автоматический перезапуск при падении процесса.
 #
 # Установка (на сервере):
-#   sudo cp deploy/telegram-relay-bot.service /etc/systemd/system/
+#   sudo cp deploy/restock-bot.service /etc/systemd/system/
 #   sudo systemctl daemon-reload
-#   sudo systemctl enable --now telegram-relay-bot
+#   sudo systemctl enable --now restock-bot
 #
 # ВАЖНО: пути ниже (WorkingDirectory, EnvironmentFile) предполагают, что
 # репозиторий склонирован как ~/restocktgbot — так называется он сам на GitHub,
@@ -15,7 +15,7 @@
 # Подробности — в DEPLOY.md.
 
 [Unit]
-Description=Telegram relay bot
+Description=Restock Telegram relay bot (site restock, port 3001)
 After=network-online.target
 Wants=network-online.target
 
@@ -27,7 +27,7 @@ EnvironmentFile=/home/ubuntu/restocktgbot/.env
 ExecStart=/usr/bin/node dist/index.js
 Restart=always
 RestartSec=5
-# systemd сам пишет stdout/stderr в журнал — смотреть: journalctl -u telegram-relay-bot -f
+# systemd сам пишет stdout/stderr в журнал — смотреть: journalctl -u restock-bot -f
 StandardOutput=journal
 StandardError=journal
 
