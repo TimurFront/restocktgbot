@@ -3,7 +3,7 @@
 Файл для восстановления контекста в новом чате. **Обновлять после каждого значимого изменения.**
 
 Последнее обновление: 2026-09-04 (вечер)
-Статус: **эта папка — бот №2 для сайта Restock.** Локально всё проверено (клиент→группа, группа→клиент, заявка с сайта через функцию Vercel). На сервер ещё не развёрнут — см. «Деплой #2 (Restock)» ниже. 56/56 тестов проходит.
+Статус: **в проде, всё работает (Restock).** Бот №2 развёрнут вторым процессом на VM FINFIX (порт 3001, служба `restock-bot`), сайт https://restock-ten.vercel.app шлёт заявки через `api/demo.js`, сквозная проверка с живого сайта прошла 2026-09-04. 56/56 тестов проходит.
 
 Репозиторий этого бота: https://github.com/TimurFront/restocktgbot. Исходный бот FINFIX: https://github.com/TimurFront/finfix-bot (публичный — иначе `git clone` на сервере не работает без токена; секретов в коде нет, `.env` не коммитится).
 Репозиторий сайта: https://github.com/TimurFront/finfix (проект `C:\projects\FINFIXlanding`, Next.js на Vercel) — интегрирован с ботом, см. раздел 10.
@@ -42,7 +42,7 @@
 - Проверено локально: `/start` в личку → топик «ttttt (@yngdth)»; ответ в топике → пришёл в личку; `POST /leads` → тема «📥 Обращения с сайта» (thread 9).
 - **Как получали GROUP_ID**: сообщения из группы бот не видел даже как админ, помог только повторный ввод бота в группу — событие `my_chat_member` содержит id чата. Если снова понадобится — `getUpdates` с `allowed_updates: ['my_chat_member']` и удалить/добавить бота.
 - **Сайт Restock** (`C:projectsestock`, статический HTML на Vercel, репо TimurFront/restock): добавлена Vercel Function `api/demo.js` (honeypot, минимальное время заполнения, rate limit, валидация → `POST /leads`), форма в `js/main.js` переведена с имитации на реальный fetch. Коммит `ef2bf5c` **локальный, не запушен** — пуш = автодеплой на Vercel. Перед пушем в Vercel нужно задать `LEADS_API_URL=http://<IP сервера>:3001` и `LEADS_SECRET` из `.env` бота.
-- **План деплоя**: второй процесс на существующей VM FINFIX (129.225.90.109): `git clone restocktgbot` → скопировать `.env` → `npm ci && npm run build` → `sudo cp deploy/restock-bot.service /etc/systemd/system/` → `enable --now restock-bot` → открыть порт 3001 на трёх уровнях (Security List, ufw, преднастроенный iptables — см. Грабли). Не трогать службу `telegram-relay-bot`.
+- **Деплой выполнен 2026-09-04** вторым процессом на VM FINFIX (129.225.90.109): код в `~/restocktgbot`, служба `restock-bot` (`systemctl status restock-bot`, `sudo journalctl -u restock-bot -f`), `.env` и `data/relay.db` скопированы с локальной машины (привязки топиков сохранены). Порт 3001: iptables-правило вставлено перед REJECT и сохранено через `netfilter-persistent save` (ufw на сервере вообще не установлен), Security List в Oracle — Ingress TCP 3001 добавлен вручную. Сайт задеплоен (коммит `ef2bf5c` запушен), переменные Vercel заданы, живая заявка дошла до темы. Обновление кода на сервере: `cd ~/restocktgbot && git pull && npm ci && npm run build && sudo systemctl restart restock-bot`. Шаги, которые делали: `git clone restocktgbot` → скопировать `.env` → `npm ci && npm run build` → `sudo cp deploy/restock-bot.service /etc/systemd/system/` → `enable --now restock-bot` → открыть порт 3001 на трёх уровнях (Security List, ufw, преднастроенный iptables — см. Грабли). Не трогать службу `telegram-relay-bot`.
 
 ### Деплой #1 (FINFIX) — параметры доступа, для истории
 
